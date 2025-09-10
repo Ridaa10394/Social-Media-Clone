@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import connectDB from './config/dbconnection.js';
 import authRouter from './routes/auth.routes.js';
+import userRouter from './routes/user.routes.js';
+import cookieparser from 'cookie-parser';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
@@ -12,9 +15,17 @@ connectDB();
 
 //middleware
 app.use(express.json());
-app.use('/api/auth', authRouter);
+app.use(cookieparser());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}
+))
 
-//routes
+//Routes
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
